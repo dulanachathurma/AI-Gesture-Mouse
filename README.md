@@ -135,7 +135,11 @@ pip install -r requirements.txt
 python -m src.main
 
 # Or direct run
-python src/main.py or python src/main.py --camera 1
+python src/main.py
+
+# Launch Voice Control Interactive Demo (by Dulana Chathurma)
+python src/demo_voice.py          # Interactive simulation
+python src/demo_voice.py --live   # With live microphone
 ```
 
 ### Quick Keyboard Shortcuts (While Running):
@@ -249,9 +253,9 @@ tests/test_mouse_controller.py .....                           [100%]
 
 ---
 
-## 🎤 Voice Control
+## 🎤 Voice Control Subsystem
 
-The optional voice command layer enables fully hands-free control over the tracking engine:
+The optional voice command layer (developed by **Dulana Chathurma**) enables fully hands-free control over the tracking engine:
 
 ```
 Wake-word: "gesture"
@@ -264,9 +268,18 @@ Examples:
   "gesture click"          → Trigger left click
 ```
 
-See the full documentation at [docs/VOICE_CONTROL.md](docs/VOICE_CONTROL.md).
+### Try the Voice Demo:
+```bash
+# Interactive keyboard simulator (no microphone required):
+python src/demo_voice.py
 
-**Install optional dependencies:**
+# Live speech recognition via microphone:
+python src/demo_voice.py --live
+```
+
+See the full architectural guide at [docs/VOICE_CONTROL.md](docs/VOICE_CONTROL.md).
+
+**Install optional voice dependencies:**
 ```bash
 pip install SpeechRecognition PyAudio
 ```
