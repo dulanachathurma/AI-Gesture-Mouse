@@ -1,0 +1,19 @@
+# CODEOWNERS — AI Gesture Mouse
+# GitHub will automatically request review from these owners
+# when a pull request modifies the listed paths.
+
+# Global default: team leader reviews everything
+*                               @Rajapakshaminindu
+
+# Voice control module — Dulana Chathurma is primary reviewer
+src/voice_controller.py         @dulana-chathurma
+tests/test_voice_controller.py  @dulana-chathurma
+docs/VOICE_CONTROL.md           @dulana-chathurma
+
+# Gesture recognition — Mihirangi is primary reviewer
+src/gesture_recognizer.py       @Mihirangi315
+tests/test_gesture_enhancements.py @Mihirangi315
+
+# UI / HUD — Kavindu is primary reviewer
+src/launcher_ui.py              @kavindugimshan
+src/calibration.py              @kavindugimshan
