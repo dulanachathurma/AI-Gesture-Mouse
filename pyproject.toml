@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-gesture-mouse"
-version = "1.0.0"
+version = "1.1.0"
 description = "AI-powered touchless mouse system using MediaPipe hand tracking and OpenCV"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -51,10 +51,14 @@ dev = [
     "flake8>=6.1.0",
     "black>=23.7.0"
 ]
+voice = [
+    "SpeechRecognition>=3.10.0"
+]
 
 [project.scripts]
 gesture-mouse = "src.main:main"
 gesture-calibrate = "src.calibration:main"
+gesture-voice = "src.demo_voice:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
