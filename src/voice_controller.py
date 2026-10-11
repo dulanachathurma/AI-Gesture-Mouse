@@ -108,6 +108,58 @@ class VoiceEvent:
 
 
 # ---------------------------------------------------------------------------
+# VoiceCommandHistory — lightweight session analytics for voice events
+# ---------------------------------------------------------------------------
+
+
+class VoiceCommandHistory:
+    """
+    Rolling in-memory history of :class:`VoiceEvent` objects for the current
+    session, used for analytics, debugging, and potential undo/replay logic.
+
+    Parameters
+    ----------
+    maxlen:
+        Maximum number of events stored (oldest are evicted, default 200).
+    """
+
+    def __init__(self, maxlen: int = 200) -> None:
+        from collections import deque
+
+        self._events: "deque[VoiceEvent]" = deque(maxlen=maxlen)
+        self._command_counts: dict[VoiceCommand, int] = {}
+
+    def record(self, event: VoiceEvent) -> None:
+        """Append *event* to the history and update command frequency counts."""
+        self._events.append(event)
+        self._command_counts[event.command] = (
+            self._command_counts.get(event.command, 0) + 1
+        )
+
+    def most_used(self) -> Optional[VoiceCommand]:
+        """Return the :class:`VoiceCommand` issued most often this session."""
+        if not self._command_counts:
+            return None
+        return max(self._command_counts, key=lambda c: self._command_counts[c])
+
+    def summary(self) -> dict:
+        """Return a serialisable session summary dict for analytics export."""
+        return {
+            "total_events": len(self._events),
+            "command_counts": {cmd.name: cnt for cmd, cnt in self._command_counts.items()},
+            "most_used": self.most_used().name if self.most_used() else None,
+        }
+
+    def clear(self) -> None:
+        """Reset history and counters (e.g., between sessions)."""
+        self._events.clear()
+        self._command_counts.clear()
+
+    def __len__(self) -> int:
+        return len(self._events)
+
+
+# ---------------------------------------------------------------------------
 # VoiceController
 # ---------------------------------------------------------------------------
 
