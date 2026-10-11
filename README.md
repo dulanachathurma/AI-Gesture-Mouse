@@ -1,4 +1,4 @@
-# 🖱️ AI Gesture Mouse
+# 🖱️ AuraTouch AI: Touchless Gesture & Voice Interactive System
 
 <div align="center">
 
