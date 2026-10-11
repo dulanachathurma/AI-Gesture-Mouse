@@ -329,3 +329,70 @@ class TestLifecycle:
     def test_is_running_false_before_start(self) -> None:
         vc = VoiceController()
         assert vc.is_running is False
+
+
+# ===========================================================================
+# VoiceCommandHistory (added in refactor)
+# ===========================================================================
+
+
+class TestVoiceCommandHistory:
+    """Tests for the VoiceCommandHistory analytics helper."""
+
+    def _make_event(self, cmd: VoiceCommand, conf: float = 1.0) -> VoiceEvent:
+        return VoiceEvent(command=cmd, raw_text=cmd.name.lower(), confidence=conf)
+
+    def test_initial_length_is_zero(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory()
+        assert len(h) == 0
+
+    def test_record_increases_length(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory()
+        h.record(self._make_event(VoiceCommand.CLICK))
+        assert len(h) == 1
+
+    def test_most_used_returns_correct_command(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory()
+        for _ in range(3):
+            h.record(self._make_event(VoiceCommand.SCROLL_UP))
+        h.record(self._make_event(VoiceCommand.PAUSE))
+        assert h.most_used() == VoiceCommand.SCROLL_UP
+
+    def test_most_used_returns_none_when_empty(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory()
+        assert h.most_used() is None
+
+    def test_summary_keys(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory()
+        h.record(self._make_event(VoiceCommand.CLICK))
+        summary = h.summary()
+        assert "total_events" in summary
+        assert "command_counts" in summary
+        assert "most_used" in summary
+
+    def test_clear_resets_state(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory()
+        h.record(self._make_event(VoiceCommand.QUIT))
+        h.clear()
+        assert len(h) == 0
+        assert h.most_used() is None
+
+    def test_maxlen_eviction(self) -> None:
+        from src.voice_controller import VoiceCommandHistory
+
+        h = VoiceCommandHistory(maxlen=3)
+        for _ in range(5):
+            h.record(self._make_event(VoiceCommand.RESUME))
+        assert len(h) == 3
