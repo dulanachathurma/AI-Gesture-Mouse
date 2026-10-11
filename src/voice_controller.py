@@ -239,13 +239,21 @@ class VoiceController:
     # Public lifecycle
     # ------------------------------------------------------------------
 
-    def start(self) -> bool:
+    def start(self, callback: Optional[Callable[[VoiceEvent], None]] = None) -> bool:
         """
         Start the background listener thread.
+
+        Parameters
+        ----------
+        callback:
+            Optional callback invoked on each recognised VoiceEvent.
 
         Returns ``True`` if started successfully, ``False`` if the
         ``SpeechRecognition`` library is unavailable.
         """
+        if callback is not None:
+            self._on_command = callback
+
         if not _SR_AVAILABLE:
             logger.info("Voice control not started — SpeechRecognition unavailable.")
             return False
