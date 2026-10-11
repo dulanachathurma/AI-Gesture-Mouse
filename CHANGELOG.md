@@ -7,23 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.1.0] — Voice & Accessibility Release (2026-10-11)
 
-### Added — Voice Control Integration (Dulana Chathurma)
+### Added — Voice Control Subsystem (Lead: Dulana Chathurma)
 - **`src/voice_controller.py`** — new optional voice command module:
-  - `VoiceCommand` enum with 12 command types
+  - `VoiceCommand` enum with 12 distinct system & mouse commands
   - `VoiceEvent` dataclass (command, raw_text, confidence, timestamp)
-  - `VoiceCommandHistory` session analytics helper (rolling deque, frequency counts, summary export)
-  - `VoiceController` class with background listener thread, wake-word gating, confidence threshold filtering, sensitivity/pause state management, callback and polling interfaces
-  - Graceful no-op degradation when `SpeechRecognition` / `PyAudio` are absent
-- **`tests/test_voice_controller.py`** — 25 mocked unit tests covering all public API surfaces
-- **`docs/VOICE_CONTROL.md`** — comprehensive integration guide
-- **`config.json`** — `voice_control` configuration block added
-- **`requirements.txt`** — optional voice control deps section added (commented-out)
+  - `VoiceCommandHistory` session analytics helper with rolling buffer, frequency telemetry, and JSON export
+  - `VoiceController` class with multi-threaded audio listener, wake-word gating (`"gesture"`), and confidence filtering
+  - `create_voice_controller_from_config(config)` factory helper
+  - `is_speech_recognition_available()` runtime detection helper
+  - Graceful zero-dependency fallback when `SpeechRecognition` / `PyAudio` are absent
+- **`src/demo_voice.py`** — interactive CLI demo and validation utility:
+  - Simulated text prompt mode for testing commands without microphone
+  - Live microphone recognition mode via `--live` flag
+  - Added `gesture-voice` CLI console script entry point
+- **`tests/test_voice_controller.py`** & **`tests/test_demo_voice.py`** — 28 comprehensive automated unit test cases
+- **`docs/VOICE_CONTROL.md`** — comprehensive integration and architectural guide
+- **`.github/CODEOWNERS`** — module code ownership assignments
 
 ### Changed
-- `README.md` — added Dulana Chathurma (Member 4), Voice Control section, updated test count, updated deliverables table and navigation
-- `docs/TEAM_WORK_SPLIT.md` — updated to four members, added Member 4 detailed task breakdown, updated test coverage count
+- `src/__init__.py` — exported `VoiceController`, `VoiceCommand`, `VoiceEvent`, and bumped package `__version__ = "1.1.0"`
+- `pyproject.toml` — bumped version to 1.1.0, added optional `voice` dependency extra, added `gesture-voice` entry point
+- `config.json` — added `voice_control` configuration block
+- `requirements.txt` — added optional voice control dependencies
+- `README.md` — documented Member 4 Dulana Chathurma, added Voice Control subsystem guide, demo usage, and team details
+- `CONTRIBUTING.md` — added module ownership table and voice control contribution guidelines
+- `docs/TEAM_WORK_SPLIT.md` — updated team roster and detailed responsibilities for Dulana Chathurma
 
 ---
 
