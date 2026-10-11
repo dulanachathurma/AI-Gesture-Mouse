@@ -24,7 +24,14 @@ Thank you for your interest in contributing to **AI Gesture Mouse**! We welcome 
    pip install -r requirements.txt
    ```
 
-4. **Run Tests**:
+4. **Optional — Enable Voice Control**:
+   ```bash
+   # Uncomment the voice deps in requirements.txt then:
+   pip install SpeechRecognition PyAudio
+   # macOS also needs: brew install portaudio
+   ```
+
+5. **Run Tests**:
    ```bash
    python -m pytest tests/
    ```
@@ -33,5 +40,16 @@ Thank you for your interest in contributing to **AI Gesture Mouse**! We welcome 
 
 - Ensure code adheres to PEP8 guidelines (`flake8`).
 - Add unit tests for new gesture recognition logic or mathematical filters.
+- Voice control changes must include mocked unit tests (no real microphone required).
 - Use clear, descriptive conventional commit messages (e.g. `feat:`, `fix:`, `docs:`, `test:`).
 - Document any new gestures in `docs/GESTURE_GUIDE.md`.
+- Document any new voice commands in `docs/VOICE_CONTROL.md`.
+
+## Module Ownership
+
+| Module | Primary Owner | GitHub Handle |
+| :--- | :--- | :--- |
+| `src/voice_controller.py` | Dulana Chathurma | @dulana-chathurma |
+| `src/gesture_recognizer.py` | G.W. Sulochana P. M. De Silva | @Mihirangi315 |
+| `src/launcher_ui.py`, `src/calibration.py` | Kavindu Gimshan | @kavindugimshan |
+| Everything else | Minindu Rajapaksha | @Rajapakshaminindu |
