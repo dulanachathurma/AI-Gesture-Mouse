@@ -213,8 +213,10 @@ class VoiceController:
         command_confidence_threshold: float = 0.55,
         pause_threshold: float = 0.6,
         enabled: bool = True,
+        language: str = "en-US",
     ) -> None:
         self.enabled = enabled
+        self.language = language
         self._on_command = on_command
         self._wake_word = wake_word.lower() if wake_word else None
         self._energy_threshold = energy_threshold
@@ -329,7 +331,7 @@ class VoiceController:
     ) -> None:
         """Attempt to recognise *audio* and dispatch a :class:`VoiceEvent`."""
         try:
-            result = recognizer.recognize_google(audio, show_all=True)
+            result = recognizer.recognize_google(audio, language=self.language, show_all=True)
         except sr.UnknownValueError:
             return  # unintelligible audio — silently ignore
         except sr.RequestError as exc:
