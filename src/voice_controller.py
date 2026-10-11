@@ -351,22 +351,20 @@ class VoiceController:
             return
 
         text_lower = text.lower().strip()
-        logger.debug("Recognised: '%s' (conf=%.2f)", text_lower, confidence)
+        print(f"\n[Voice Heard] '{text}' (Confidence: {confidence:.2f})")
 
-        # Wake-word gate
-        if self._wake_word and self._wake_word not in text_lower:
-            return
-
-        # Strip wake word for cleaner keyword matching
-        if self._wake_word:
+        # Strip wake word if spoken, but allow direct commands too
+        if self._wake_word and self._wake_word in text_lower:
             text_lower = text_lower.replace(self._wake_word, "").strip()
 
-        # Confidence gate
-        if confidence < self._conf_threshold:
-            logger.debug("Confidence %.2f below threshold %.2f — rejected.", confidence, self._conf_threshold)
+        # Confidence gate (lenient for accessibility)
+        if confidence > 0 and confidence < 0.40:
+            logger.debug("Confidence %.2f below threshold — rejected.", confidence)
             return
 
         command = self._classify(text_lower)
+        if command != VoiceCommand.UNKNOWN:
+            print(f"  -> [Voice Action] Triggered: {command.name}")
         event = VoiceEvent(command=command, raw_text=text, confidence=confidence)
 
         logger.info("VoiceEvent: %s", event)
