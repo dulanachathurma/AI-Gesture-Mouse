@@ -6,7 +6,12 @@ from src.config import AppConfig
 from src.hand_detector import HandDetector, HandLandmarks
 from src.mouse_controller import MouseController
 from src.gesture_recognizer import GestureRecognizer, GestureType
-from src.voice_controller import VoiceController, VoiceCommand, VoiceEvent
+from src.voice_controller import (
+    VoiceController,
+    VoiceCommand,
+    VoiceEvent,
+    is_speech_recognition_available,
+)
 
 __version__ = "1.1.0"
 __all__ = [
@@ -19,4 +24,5 @@ __all__ = [
     "VoiceController",
     "VoiceCommand",
     "VoiceEvent",
+    "is_speech_recognition_available",
 ]

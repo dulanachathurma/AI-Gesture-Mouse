@@ -471,3 +471,8 @@ def create_voice_controller_from_config(config: dict) -> "VoiceController":
         command_confidence_threshold=float(vc_cfg.get("command_confidence_threshold", 0.55)),
         pause_threshold=float(vc_cfg.get("pause_threshold", 0.6)),
     )
+
+
+def is_speech_recognition_available() -> bool:
+    """Return True if SpeechRecognition and PyAudio are installed in current runtime."""
+    return bool(_SR_AVAILABLE)
