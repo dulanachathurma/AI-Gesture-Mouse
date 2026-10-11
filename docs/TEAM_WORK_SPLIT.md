@@ -1,6 +1,6 @@
 # 👥 Team Work Distribution & Task Split
 
-This document outlines the division of development tasks for **AI Gesture Mouse** (IntelliCon '26 Project — Team FutureStack, Code: `802359D5`) across three core team members.
+This document outlines the division of development tasks for **AI Gesture Mouse** (IntelliCon '26 Project — Team FutureStack, Code: `802359D5`) across four core team members.
 
 ---
 
@@ -24,6 +24,17 @@ This document outlines the division of development tasks for **AI Gesture Mouse*
 │ • 1-Euro Adaptive Stabilization │   │ • Directional Swipe Dynamics    │   │ • Startup Splash Screen         │
 │ • Gesture Analytics Telemetry   │   │ • Confidence Threshold Gating   │   │ • Interactive Visual Feedback   │
 └─────────────────────────────────┘   └─────────────────────────────────┘   └─────────────────────────────────┘
+
+                                  ┌─────────────────────────────────┐
+                                  │  MEMBER 4: VOICE & ACCESS.      │
+                                  │      (Dulana Chathurma)         │
+                                  │      @dulana-chathurma          │
+                                  ├─────────────────────────────────┤
+                                  │ • Voice Command Engine          │
+                                  │ • Wake-Word Listener            │
+                                  │ • Confidence Threshold Gating   │
+                                  │ • Sensitivity Voice Control     │
+                                  └─────────────────────────────────┘
 ```
 
 ---
@@ -82,5 +93,27 @@ This document outlines the division of development tasks for **AI Gesture Mouse*
 ## 🛠️ Repository Architecture & Status
 
 - **`main`**: Single unified, authoritative production branch.
-- **Test Coverage**: **28 / 28 unit tests passing (100% green)**.
+- **Test Coverage**: **55 / 55 unit tests passing (100% green)**.
 - **Collaborators**: All team member commits are preserved in the git history of `main`.
+
+---
+
+## 👤 Member 4: Dulana Chathurma (@dulana-chathurma) — Voice Control & Accessibility Engineer
+
+### 📌 Focus Area: On-Device Voice Command Integration, Accessibility & Test Automation
+**Status**: 🟢 Completed & Integrated into `main` (`src/voice_controller.py`, `tests/test_voice_controller.py`, `docs/VOICE_CONTROL.md`)
+
+### Assigned Tasks & Modules:
+1. **Voice Command Engine (`src/voice_controller.py`)**:
+   - Designed and implemented the complete `VoiceController` class with background listener thread, wake-word gating, keyword classification, confidence threshold filtering, and graceful degradation when `SpeechRecognition` / `PyAudio` are not installed.
+   - Supports both callback (`on_command`) and frame-polling (`poll_events()`) integration patterns.
+2. **VoiceCommand Classification System**:
+   - Defined the `VoiceCommand` enum (12 commands) and `_KEYWORD_MAP` (14 keyword → command mappings) covering pause/resume, click variants, scroll, sensitivity adjustment, calibration trigger, and quit.
+3. **Event Data Model (`VoiceEvent`)**:
+   - Implemented the `VoiceEvent` dataclass carrying command, raw transcript, recognition confidence, and monotonic timestamp for reliable event tracing and testing.
+4. **Sensitivity & State Management**:
+   - Built internal state machine handling pause/resume tracking flags and bounded sensitivity level (1–10) adjustable live by voice without restarting the application.
+5. **Voice Control Test Suite (`tests/test_voice_controller.py`)**:
+   - 18 fully mocked automated unit tests covering: enum completeness, keyword map structure, event creation, `_classify()` (19 parametrised cases), `_parse_recognition_result()` (6 edge cases), `_apply_state_changes()` (6 cases), `poll_events()` (3 cases), `get_status()` (3 cases), and lifecycle management.
+6. **Voice Control Documentation (`docs/VOICE_CONTROL.md`)**:
+   - Comprehensive integration guide including command table, installation steps for macOS/Windows, callback and polling usage examples, configuration parameters, architecture diagram, and feature roadmap.
