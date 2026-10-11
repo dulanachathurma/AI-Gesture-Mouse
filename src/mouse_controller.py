@@ -228,12 +228,15 @@ class MouseController:
         self.last_click_time = time.time()
 
     def right_click(self) -> None:
-        """Performs right mouse click."""
+        """Performs right mouse click (with macOS Quartz / button='secondary' fallback)."""
         if PYAUTOGUI_AVAILABLE and pyautogui is not None:
             try:
                 pyautogui.rightClick()
             except Exception:
-                pass
+                try:
+                    pyautogui.click(button="right")
+                except Exception:
+                    pass
         self.last_click_time = time.time()
 
     def double_click(self) -> None:
