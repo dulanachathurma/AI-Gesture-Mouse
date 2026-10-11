@@ -34,6 +34,12 @@ from src.gesture_recognizer import GestureRecognizer, GestureType
 from src.action_mapper import ActionMapper
 from src.analytics import GestureAnalytics
 from src.launcher_ui import LauncherWindow
+from src.voice_controller import (
+    VoiceController,
+    VoiceCommand,
+    VoiceEvent,
+    is_speech_recognition_available,
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -51,6 +57,14 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--no-hud", action="store_true",
         help="Disable HUD graphics overlay"
+    )
+    parser.add_argument(
+        "--voice", action="store_true", default=True,
+        help="Enable background voice command subsystem"
+    )
+    parser.add_argument(
+        "--no-voice", action="store_false", dest="voice",
+        help="Disable background voice command subsystem"
     )
     return parser.parse_args()
 
@@ -294,6 +308,46 @@ def main() -> None:
     action_mapper = ActionMapper(custom_bindings=config.action_bindings)
     analytics = GestureAnalytics() if config.enable_analytics else None
 
+    # Voice controller subsystem integration (Dulana Chathurma)
+    voice_controller = None
+    last_voice_command_display = ""
+    last_voice_command_time = 0.0
+
+    if args.voice and is_speech_recognition_available():
+        def on_voice_command(event: VoiceEvent) -> None:
+            nonlocal last_voice_command_display, last_voice_command_time
+            last_voice_command_display = f"VOICE: {event.command.name}"
+            last_voice_command_time = time.time()
+            cmd = event.command
+            if cmd == VoiceCommand.CLICK:
+                mouse.left_click()
+            elif cmd == VoiceCommand.RIGHT_CLICK:
+                mouse.right_click()
+            elif cmd == VoiceCommand.DOUBLE_CLICK:
+                mouse.double_click()
+            elif cmd == VoiceCommand.SCROLL_UP:
+                mouse.scroll(3)
+            elif cmd == VoiceCommand.SCROLL_DOWN:
+                mouse.scroll(-3)
+            elif cmd == VoiceCommand.PAUSE:
+                action_mapper.tracking_paused = True
+            elif cmd == VoiceCommand.RESUME:
+                action_mapper.tracking_paused = False
+            elif cmd == VoiceCommand.SENSITIVITY_UP:
+                config.smoothing_factor = max(1.5, config.smoothing_factor - 1.0)
+                mouse.smoothing = config.smoothing_factor
+            elif cmd == VoiceCommand.SENSITIVITY_DOWN:
+                config.smoothing_factor = min(12.0, config.smoothing_factor + 1.0)
+                mouse.smoothing = config.smoothing_factor
+
+        voice_controller = VoiceController(
+            on_command=on_voice_command,
+            wake_word="gesture",
+            energy_threshold=300,
+        )
+        if voice_controller.start():
+            print("[Info] Voice Control Subsystem active! Say 'gesture click', 'gesture pause', etc.")
+
     prev_time = time.time()
     start_time = time.time()
     fps = 0.0
@@ -440,6 +494,11 @@ def main() -> None:
             # Draw HUD
             if not args.no_hud and config.show_hud:
                 draw_hud(frame, active_gesture, fps, config, cursor_pos, meta)
+                if last_voice_command_display and (curr_time - last_voice_command_time) < 2.5:
+                    cv2.putText(
+                        frame, last_voice_command_display, (35, config.frame_height - 25),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 255, 128), 2, cv2.LINE_AA
+                    )
 
             # Draw Splash Screen during first 2 seconds
             elapsed = curr_time - start_time
@@ -500,6 +559,8 @@ def main() -> None:
         import traceback
         traceback.print_exc()
     finally:
+        if voice_controller is not None:
+            voice_controller.stop()
         mouse.end_drag()
         if cap is not None:
             cap.release()
