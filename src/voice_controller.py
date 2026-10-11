@@ -434,3 +434,40 @@ class VoiceController:
             "paused_by_voice": self._paused_by_voice,
             "pending_events": self._event_queue.qsize(),
         }
+
+
+# ---------------------------------------------------------------------------
+# Module-level convenience factory
+# ---------------------------------------------------------------------------
+
+
+def create_voice_controller_from_config(config: dict) -> "VoiceController":
+    """
+    Instantiate a :class:`VoiceController` from the project's ``config.json``
+    ``voice_control`` sub-dict.
+
+    Example
+    -------
+    >>> import json
+    >>> cfg = json.load(open("config.json"))
+    >>> vc = create_voice_controller_from_config(cfg)
+    >>> vc.start()
+
+    Parameters
+    ----------
+    config:
+        The full parsed ``config.json`` dictionary.  The ``voice_control``
+        key is optional — if absent, default values are used.
+
+    Returns
+    -------
+    VoiceController
+        A configured (but not yet started) controller instance.
+    """
+    vc_cfg = config.get("voice_control", {})
+    return VoiceController(
+        wake_word=vc_cfg.get("wake_word", "gesture"),
+        energy_threshold=int(vc_cfg.get("energy_threshold", 300)),
+        command_confidence_threshold=float(vc_cfg.get("command_confidence_threshold", 0.55)),
+        pause_threshold=float(vc_cfg.get("pause_threshold", 0.6)),
+    )
