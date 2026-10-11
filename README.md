@@ -255,29 +255,38 @@ tests/test_mouse_controller.py .....                           [100%]
 
 ## 🎤 Voice Control Subsystem
 
-The optional voice command layer (developed by **Dulana Chathurma**) enables fully hands-free control over the tracking engine:
+The on-device voice command layer (developed by **Dulana Chathurma**) operates concurrently with the camera hand tracking loop, enabling complete hands-free navigation and assistive accessibility:
 
-```
-Wake-word: "gesture"
+### 🗣️ Supported Spoken Commands:
 
-Examples:
-  "gesture pause"          → Freeze cursor tracking
-  "gesture resume"         → Resume cursor tracking
-  "gesture scroll up"      → Scroll active window up
-  "gesture sensitivity up" → Increase pointer speed
-  "gesture click"          → Trigger left click
-```
+| Voice Command (English Phrase) | Action & Triggered Behavior |
+| :--- | :--- |
+| **`"click"`** / **`"left click"`** | **Mouse Left Click**: Fires immediate left click at current cursor position. |
+| **`"double click"`** | **Mouse Double Click**: Opens files, folders, and desktop shortcuts. |
+| **`"right click"`** | **Mouse Right Click**: Opens context menus at target location. |
+| **`"scroll up"`** | **Scroll Window Up**: Smooth upward scroll in browsers and documents. |
+| **`"scroll down"`** | **Scroll Window Down**: Smooth downward scroll in browsers and documents. |
+| **`"pause"`** / **`"stop tracking"`** | **Freeze Tracking**: Locks cursor in place (hand movement will not move pointer). |
+| **`"resume"`** / **`"start tracking"`** | **Resume Tracking**: Unlocks cursor and resumes real-time hand guidance. |
+| **`"faster"`** / **`"sensitivity up"`** | **Speed Up**: Increases cursor responsiveness and reduces smoothing lag. |
+| **`"slower"`** / **`"sensitivity down"`** | **Slow Down**: Adds extra smoothing for steady, pixel-perfect aiming. |
 
-### Try the Voice Demo:
+> 💡 *Note: Commands work both directly (e.g., `"click"`) or with the optional prefix (e.g., `"gesture click"`).*
+
+### 🚀 Running Voice Control:
+
 ```bash
-# Interactive keyboard simulator (no microphone required):
-python src/demo_voice.py
+# 1. Run full application (Camera + Voice Control concurrently):
+python3 src/main.py --camera 0
 
-# Live speech recognition via microphone:
-python src/demo_voice.py --live
+# 2. Run standalone live microphone voice demo:
+python3 src/demo_voice.py --live
+
+# 3. Run interactive text simulator (no microphone required):
+python3 src/demo_voice.py
 ```
 
-See the full architectural guide at [docs/VOICE_CONTROL.md](docs/VOICE_CONTROL.md).
+See the full architectural and test documentation at [docs/VOICE_CONTROL.md](docs/VOICE_CONTROL.md).
 
 **Install optional voice dependencies:**
 ```bash
