@@ -12,7 +12,7 @@
 
 **A high-precision, software-only, AI-powered touchless human-computer interface using standard webcams and natural hand gestures.**
 
-[Executive Summary](#-executive-summary) • [Key Features](#-key-features) • [Gesture Guide](#-gesture-guide) • [Fully Functional vs Mocked](#-what-is-fully-functional-vs-mocked) • [Tech Stack](#-tech-stack) • [Installation & Quickstart](#-installation--quickstart) • [Submission Deliverables](#-intellicon-2026-gate-3-deliverables) • [Architecture](#-architecture) • [Team](#-team-futurestack)
+[Executive Summary](#-executive-summary) • [Key Features](#-key-features) • [Gesture Guide](#-gesture-guide) • [Fully Functional vs Mocked](#-what-is-fully-functional-vs-mocked) • [Tech Stack](#-tech-stack) • [Installation & Quickstart](#-installation--quickstart) • [Submission Deliverables](#-intellicon-2026-gate-3-deliverables) • [Architecture](#-architecture) • [Voice Control](#-voice-control) • [Team](#-team-futurestack)
 
 </div>
 
@@ -46,6 +46,7 @@
 * 🖥️ **Always-On-Top Compact HUD**: Lightweight non-intrusive preview window configured with native OS window layering (`WS_EX_TOPMOST` / `WS_EX_TOOLWINDOW`) that floats above full-screen browsers, PDFs, and slide decks without stealing focus.
 * 🎨 **Dark-Mode Launcher UI**: Single-window Tkinter graphical launcher featuring a visual gesture cheatsheet, camera selector, and instant launch button.
 * 🎛️ **Interactive Calibration Suite**: Standalone utility (`src/calibration.py`) allowing users to customize pinch thresholds, coordinate margins, and pointer sensitivity for their camera setup.
+* 🎤 **Voice Command Integration**: Optional on-device voice control layer (`src/voice_controller.py`) enabling wake-word-activated commands (pause, resume, click, scroll, sensitivity) — fully non-blocking and gracefully disabled when optional dependencies are absent.
 * 📊 **Telemetry & Analytics**: Local session logging (`analytics_report.json`) tracking gesture frequencies, stroke speeds, and detection confidence.
 * 🔒 **100% On-Device Privacy**: All computer vision inference executes locally in RAM. Zero video frames or biometric identifiers are stored or transmitted across networks.
 
@@ -81,7 +82,8 @@ In accordance with **IntelliCon 2026 Gate 3** evaluation standards, here is the 
 | **Always-On-Top Floating HUD** | 🟢 **100% Fully Functional** | OpenCV GUI enhanced with Windows ctypes API (`WS_EX_TOPMOST`, `WS_EX_TOOLWINDOW`). |
 | **Interactive Calibration Tool** | 🟢 **100% Fully Functional** | Visual threshold measurement utility saving user preferences directly to `config.json`. |
 | **Local Session Analytics** | 🟢 **100% Fully Functional** | Active usage telemetry exported to `analytics_report.json` upon exit. |
-| **Automated Unit Test Suite** | 🟢 **100% Fully Functional** | **37 / 37 automated tests passing** across all math, bounds, debouncing, and actions. |
+| **Voice Command Integration** | 🟢 **100% Fully Functional** | Wake-word listener (`src/voice_controller.py`) with pause/resume/click/scroll/sensitivity commands; graceful no-op when SpeechRecognition unavailable. |
+| **Automated Unit Test Suite** | 🟢 **100% Fully Functional** | **55 / 55 automated tests passing** across all math, bounds, debouncing, actions, and voice commands. |
 | **Multi-Monitor Desktop Span** | 🟡 *Roadmap (Planned Scope)* | Currently controls the active primary OS display; virtual multi-screen span is mapped for Phase 3. |
 | **Cloud Profile Synchronization** | 🟡 *Roadmap (Enterprise Scope)* | Settings are stored locally in `config.json`; multi-device cloud profiles planned for enterprise. |
 
@@ -156,6 +158,7 @@ In compliance with the **IntelliCon 2026 Final Submission (Gate 3)** guidelines,
 | **Business Case Document** | Problem, solution, market size, competition, and monetization | 📄 [docs/BUSINESS_CASE.md](docs/BUSINESS_CASE.md) |
 | **Project Presentation** | 12-slide comprehensive project slide deck summary | 📄 [Proposal/Gate1_Writeup_GestureMouseAI .pdf](Proposal/Gate1_Writeup_GestureMouseAI%20.pdf) |
 | **AI Usage Report** | Transparent disclosure of AI tools, contributions, originality & privacy | 📄 [docs/AI_USAGE_REPORT.md](docs/AI_USAGE_REPORT.md) |
+| **Voice Control Documentation** | Voice command integration guide, usage, installation & architecture | 📄 [docs/VOICE_CONTROL.md](docs/VOICE_CONTROL.md) |
 
 ---
 
@@ -246,6 +249,30 @@ tests/test_mouse_controller.py .....                           [100%]
 
 ---
 
+## 🎤 Voice Control
+
+The optional voice command layer enables fully hands-free control over the tracking engine:
+
+```
+Wake-word: "gesture"
+
+Examples:
+  "gesture pause"          → Freeze cursor tracking
+  "gesture resume"         → Resume cursor tracking
+  "gesture scroll up"      → Scroll active window up
+  "gesture sensitivity up" → Increase pointer speed
+  "gesture click"          → Trigger left click
+```
+
+See the full documentation at [docs/VOICE_CONTROL.md](docs/VOICE_CONTROL.md).
+
+**Install optional dependencies:**
+```bash
+pip install SpeechRecognition PyAudio
+```
+
+---
+
 ## 👥 Team FutureStack
 
 **Undergraduate — IntelliCon 2026 (Team Code: `802359D5`)**
@@ -255,6 +282,7 @@ tests/test_mouse_controller.py .....                           [100%]
 | **Minindu Rajapaksha** | **Team Leader** & Core AI / Systems Engineer | Mathematical filtering, 1-Euro filter pipeline, OS automation, system architecture |
 | **G.W. Sulochana Prabodhani Mihirangi De Silva** | Co-Developer & QA Lead | Gesture state machine, debounce timers, quality assurance |
 | **Kavindu Gimshan** | Co-Developer & UI/UX / Product Strategy | Launcher GUI, HUD telemetry design, user experience & business strategy |
+| **Dulana Chathurma** | Co-Developer & Voice / Accessibility Engineer | Voice command integration (`src/voice_controller.py`), on-device speech recognition, accessibility feature design & test suite |
 
 ---
 
