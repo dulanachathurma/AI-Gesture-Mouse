@@ -172,7 +172,8 @@ Watch our official product video demonstrating live tracking, zero-shake cursor 
 
 <p align="center">
   <a href="https://youtu.be/x3-YuQR_cVY?si=oymMtk9gmA4gh2xX">
-    <img src="https://img.youtube.com/vi/x3-YuQR_cVY/maxresdefault.jpg" alt="AI Gesture Mouse Demonstration Video" width="750" style="border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.4);"/>
+   <img width="1024" height="820" alt="72ed0716-89c2-4f1e-bdf7-1964c75e3cb8" src="https://github.com/user-attachments/assets/99c56e65-78d2-4886-a889-1cb543cd62d9" />
+
   </a>
 </p>
 
