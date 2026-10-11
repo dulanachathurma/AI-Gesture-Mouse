@@ -155,6 +155,18 @@ class VoiceCommandHistory:
         self._events.clear()
         self._command_counts.clear()
 
+    def to_list(self) -> list[dict]:
+        """Return list of serialized event dictionaries."""
+        return [
+            {
+                "command": event.command.name,
+                "raw_text": event.raw_text,
+                "confidence": event.confidence,
+                "timestamp": event.timestamp,
+            }
+            for event in self._events
+        ]
+
     def __len__(self) -> int:
         return len(self._events)
 
@@ -200,7 +212,9 @@ class VoiceController:
         energy_threshold: int = 300,
         command_confidence_threshold: float = 0.55,
         pause_threshold: float = 0.6,
+        enabled: bool = True,
     ) -> None:
+        self.enabled = enabled
         self._on_command = on_command
         self._wake_word = wake_word.lower() if wake_word else None
         self._energy_threshold = energy_threshold
@@ -210,6 +224,7 @@ class VoiceController:
         self._running = False
         self._thread: Optional[threading.Thread] = None
         self._event_queue: queue.Queue[VoiceEvent] = queue.Queue()
+        self.history = VoiceCommandHistory()
 
         # State
         self._paused_by_voice = False
@@ -346,6 +361,7 @@ class VoiceController:
 
         logger.info("VoiceEvent: %s", event)
         self._apply_state_changes(event)
+        self.history.record(event)
         self._event_queue.put(event)
 
         if self._on_command:
@@ -409,6 +425,16 @@ class VoiceController:
     # ------------------------------------------------------------------
     # Utility: drain event queue (for polling-style consumers)
     # ------------------------------------------------------------------
+
+    def parse_command(self, text: str) -> VoiceCommand:
+        """
+        Parse a raw spoken phrase into a :class:`VoiceCommand`.
+        Strips the configured wake word if present.
+        """
+        clean_text = text.lower().strip()
+        if self._wake_word and self._wake_word in clean_text:
+            clean_text = clean_text.replace(self._wake_word, "").strip()
+        return self._classify(clean_text)
 
     def poll_events(self) -> list[VoiceEvent]:
         """
