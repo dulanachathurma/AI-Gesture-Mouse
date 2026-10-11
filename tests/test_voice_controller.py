@@ -396,3 +396,33 @@ class TestVoiceCommandHistory:
         for _ in range(5):
             h.record(self._make_event(VoiceCommand.RESUME))
         assert len(h) == 3
+
+
+# ===========================================================================
+# create_voice_controller_from_config factory
+# ===========================================================================
+
+
+class TestCreateFromConfig:
+    """Tests for the create_voice_controller_from_config() factory helper."""
+
+    def test_factory_with_empty_config(self) -> None:
+        from src.voice_controller import create_voice_controller_from_config
+
+        vc = create_voice_controller_from_config({})
+        assert isinstance(vc, VoiceController)
+        status = vc.get_status()
+        assert status["wake_word"] == "gesture"  # default
+
+    def test_factory_reads_wake_word(self) -> None:
+        from src.voice_controller import create_voice_controller_from_config
+
+        cfg = {"voice_control": {"wake_word": "mouse"}}
+        vc = create_voice_controller_from_config(cfg)
+        assert vc.get_status()["wake_word"] == "mouse"
+
+    def test_factory_handles_missing_voice_control_key(self) -> None:
+        from src.voice_controller import create_voice_controller_from_config
+
+        vc = create_voice_controller_from_config({"camera_index": 0})
+        assert vc.get_status()["wake_word"] == "gesture"
