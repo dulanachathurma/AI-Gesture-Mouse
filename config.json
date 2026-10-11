@@ -15,5 +15,13 @@
   "drag_hold_duration": 0.4,
   "click_cooldown": 0.2,
   "scroll_sensitivity": 2.5,
-  "enable_analytics": true
+  "enable_analytics": true,
+  "voice_control": {
+    "enabled": true,
+    "wake_word": "gesture",
+    "energy_threshold": 300,
+    "command_confidence_threshold": 0.55,
+    "pause_threshold": 0.6,
+    "sensitivity_level": 5
+  }
 }
